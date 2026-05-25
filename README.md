@@ -1,5 +1,6 @@
 # ASR-Hinglish-Code-Mixed
-Evaluate various architectures for parameter efficient, low latency and build good cer/wer models
+Evaluate various architectures for parameter efficient, low latency and build good cer/wer models.
+Please reach out to me to get access.
 <!--
 ![Page 1](images/hinglish1.png)
 ---
