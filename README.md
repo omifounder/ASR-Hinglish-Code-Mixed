@@ -1,20 +1,20 @@
 # ASR-Hinglish-Code-Mixed
 Evaluate various architectures for parameter efficient, low latency and build good cer/wer models. <br>
 Please reach out to get more details.
-<!--
+
 ![Page 1](images/hinglish1.png)
 ---
 ![Page 2](images/hinglish2.png)
 ---
-![Page 3](images/hinglish3a.png)
+![Page 3a](images/hinglish3a.png)
 ---
-![Page 3](images/hinglish3b.png)
+![Page 3b](images/hinglish3b.png)
 ---
-![Page 1](images/hinglish4.png)
+![Page 4](images/hinglish4.png)
 ---
-![Page 2](images/hinglish5.png)
+![Page 5](images/hinglish5.png)
 ---
-![Page 3](images/hinglish6.png)
+![Page 6](images/hinglish6.png)
 ---
-![Page 1](images/hinglish7.png)
+![Page 7](images/hinglish7.png)
 ---
