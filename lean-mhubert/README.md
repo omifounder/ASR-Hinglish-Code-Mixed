@@ -292,7 +292,7 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
   - Designing from day one for commercial safety (no research-only weights).  
   - Adapting a large academic model (mHuBERT‑147) into a **domain-specific, deployable** variant for Hindi/Hinglish/English contact centers.
 
-## REFERECNE - 
+## REFERECNE
 ### HuBERT-147: A Compact Multilingual HuBERT Model
 - Marcely Zanon Boito1, Vivek Iyer2, Nikolaos Lagos1, Laurent Besacier1, Ioan Calapodescu1 <br>
 - 1NAVER LABS Europe - France, 2University of Edinburgh - UK <br>
