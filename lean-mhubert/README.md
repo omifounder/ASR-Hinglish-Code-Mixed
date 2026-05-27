@@ -296,9 +296,6 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
 <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
         <li>mHuBERT-147: A Compact Multilingual HuBERT Model <a href="https://arxiv.org/pdf/2406.06371">↗</a></li> 
 
-- mHuBERT-147: A Compact Multilingual HuBERT Model [↗](href="https://arxiv.org/pdf/2406.06371)
-
-  
 ---
 
 If you’re reading this on GitHub and want to discuss the design or collaborate on LeanHuBERT-style models, feel free to open an issue or reach out.
