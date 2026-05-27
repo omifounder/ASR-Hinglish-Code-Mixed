@@ -1,6 +1,3 @@
-Here’s an updated `README.md` that (1) includes your MuCS benchmarking setup and local paths, and (2) makes clear which parts are already implemented vs. planned.
-
-```markdown
 # LeanHuBERT: A Compact, Commercially-Usable HuBERT-style Encoder for Hindi / Hinglish / English
 
 This repo documents my design and implementation plan for a **lean HuBERT-style speech representation model**, inspired by mHuBERT‑147 but built **from scratch on commercially-licensed data** and focused on **Hindi, Hinglish, and English** telephony.
@@ -297,6 +294,3 @@ This project highlights:
   - Adapting a large academic model (mHuBERT‑147) into a **domain-specific, deployable** variant for Hindi/Hinglish/English contact centers.
 
 If you’re reading this on GitHub and want to discuss the design or collaborate on LeanHuBERT-style models, feel free to open an issue or reach out.
-```
-
-If you want, I can also draft a short `PROJECT_NOTES.md` with 5–6 bullet points that you can use as a quick verbal summary in interviews (e.g., a 60–90 second “project pitch”).
