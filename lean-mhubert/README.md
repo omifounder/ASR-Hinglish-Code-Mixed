@@ -299,8 +299,7 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
 - **Training code:**  https://github.com/utter-project/fairseq <br>
 - **Pre-processing code:** https://github.com/utter-project/mHuBERT-147-scripts <br>
 - **Model Weights:** https://huggingface.co/utter-project/mHuBERT-147 <br>
-<ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-        <li>Paper <a href="https://arxiv.org/pdf/2406.06371">↗</a></li> 
+- **Paper** <a href="https://arxiv.org/pdf/2406.06371">↗</a>
 
 ---
 
