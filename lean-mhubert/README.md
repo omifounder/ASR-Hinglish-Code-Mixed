@@ -11,17 +11,17 @@ The goal is to get **mHuBERT‑like benefits** (robust multilingual SSL represen
 
 ## 1. Motivation and Design Goals
 
-Modern multilingual SSL models like **XLS‑R‑300M** and **mHuBERT‑147** show that:
-- A **HuBERT-style multi-iteration SSL objective** with **discrete units from k-means clustering** yields strong, reusable speech representations.[web:233][web:270]
-- A **compact base-sized model (~95M params)** can outperform much larger models (e.g., XLS‑R‑300M) on ML‑SUPERB, especially when carefully curated multilingual data and FAISS-accelerated clustering are used.[web:233][web:380][web:382]
+Modern multilingual SSL models like XLS‑R‑300M and mHuBERT‑147 show that:
+- A HuBERT-style multi-iteration SSL objective with discrete units from k-means clustering yields strong, reusable speech representations.
+- A compact base-sized model (~95M params) can outperform much larger models on multilingual benchmarks when trained with carefully curated data and efficient clustering.
 
 However:
 
-- mHuBERT‑147 is released under a **research-only / non-commercial** license, so its weights cannot be used in production.  
-- Large generic models are often **too heavy** for CPU-only telephony deployments with 30–100 concurrent calls per server.  
+- mHuBERT‑147 is released under a research-only / non-commercial license, so its weights cannot be used in production.
+- Large generic models are often too heavy for CPU-only telephony deployments with 30–100 concurrent calls per server.
 - I care specifically about **Hindi / Hinglish / Indian English** in noisy IVR / call center conditions.
 
-**Design goal:** Build a **~100M-parameter HuBERT-style encoder**, trained with a **multi-iteration HuBERT objective** and **FAISS-based clustering**, only on data I can legally use commercially, and tuned end-to-end for **8 kHz telephony**.
+**Design goal:** Build a ~100M-parameter HuBERT-style encoder, trained with a multi-iteration HuBERT objective and FAISS-based clustering, only on data I can legally use commercially, and tuned end-to-end for 8 kHz telephony.
 
 ---
 
@@ -32,20 +32,20 @@ The model follows the HuBERT / mHuBERT line of work:
 - **Encoder**: HuBERT-base style encoder (~95–110M parameters)  
   - 1D convolutional feature encoder over raw waveform.  
   - Transformer encoder stack (e.g., 12 layers, 768 hidden size).  
-- **SSL objective**: HuBERT masked prediction over **discrete units** produced by k-means clustering of acoustic or hidden features.[web:233][web:270]
+- **SSL objective**: HuBERT masked prediction over discrete units produced by k-means clustering of acoustic or hidden features.
 - **Multi-iteration training**:
-  - **Iteration 0**: k-means on MFCC/log-Mel features → HuBERT masked prediction on cluster IDs.  
-  - **Iteration 1**: k-means on hidden states from Iteration 0 → improved targets and continued pre-training.
+  - Iteration 0: k-means on MFCC/log-Mel features → HuBERT masked prediction on cluster IDs.  
+  - Iteration 1: k-means on hidden states from Iteration 0 → improved targets and continued pre-training.
 - **Downstream ASR**:
-  - Compact **CTC head** on top of the encoder.  
-  - Custom **Hinglish tokenizer** supporting Devanagari + Latin.  
-  - CTC decoding via **pyctcdecode + 4-gram KenLM**.
+  - Compact CTC head on top of the encoder.  
+  - Custom Hinglish tokenizer supporting Devanagari + Latin.  
+  - CTC decoding via pyctcdecode + 4-gram KenLM.
 
 **Differences vs. mHuBERT‑147:**
 
-- Only **3 languages** (Hindi, Hinglish, English) instead of 147.[web:233]  
-- Much smaller, domain-focused data (telephony + Indian conversational speech vs. 90k+ h multi-domain).[web:233][web:380]  
-- Implementation explicitly optimized for **telephony ASR on CPU**, not generic foundation model usage.
+- Only 3 languages (Hindi, Hinglish, English) instead of 147.
+- Much smaller, domain-focused data (telephony + Indian conversational speech vs. 90k+ h multi-domain).
+- Implementation explicitly optimized for telephony ASR on CPU, not generic foundation model usage.
 
 ---
 
@@ -65,9 +65,9 @@ I use three categories of data:
    - Curated based on license terms (e.g., specific CC variants, explicit commercial permission).
 
 3. **Benchmarking-only corpora (for evaluation, not training)**  
-   - **MuCS 2021** for multilingual and code-switching ASR benchmarking.[web:305][web:306]  
+   - MuCS 2021 for multilingual and code-switching ASR benchmarking.  
    - In my local setup, MuCS manifests live under:  
-     - `/home/om/asr-benchmarking/hindi/tsvs/` (e.g., `mucs_train.tsv`, `mucs_test.tsv`).[cite:265][cite:266]
+     - `/home/om/asr-benchmarking/hindi/tsvs/` (e.g., `mucs_train.tsv`, `mucs_test.tsv`).
 
 No non-commercial models (e.g., mHuBERT‑147) are used as initialization. I treat them as **papers to learn from**, not checkpoints to reuse.
 
@@ -80,7 +80,7 @@ No non-commercial models (e.g., mHuBERT‑147) are used as initialization. I tre
   - `domain` in {`call_center`, `ivr`, `web`}.  
   - `duration_sec`.
 
-For SSL sampling and clustering, I **cap per-language hours** to prevent English from overwhelming Hindi/Hinglish, inspired by mHuBERT‑147’s language and dataset up-sampling scheme but simplified to 3 languages.[web:270][web:380]
+For SSL sampling and clustering, I cap per-language hours to prevent English from overwhelming Hindi/Hinglish, inspired by mHuBERT‑147’s language and dataset up-sampling scheme but simplified to 3 languages.
 
 ---
 
@@ -91,12 +91,12 @@ For SSL sampling and clustering, I **cap per-language hours** to prevent English
 **Goal:** Produce initial discrete units for HuBERT using shallow acoustic features.
 
 - Features:
-  - MFCCs or log-Mel filterbanks (25 ms window, 10 ms hop), as in HuBERT.[web:289][web:295]  
+  - MFCCs or log-Mel filterbanks (25 ms window, 10 ms hop), as in the original HuBERT setup.  
 - Sampling:
   - Sample frames from all three languages with per-language caps (e.g., up to N hours per language).  
 - Clustering:
-  - Use **FAISS IVF k-means** on all sampled frames to obtain K clusters (K≈100–200).  
-  - FAISS allows clustering and label assignment at mHuBERT-like scale with manageable memory and runtime, as demonstrated in the mHuBERT‑147 work.[web:233][web:270][web:380]  
+  - Use FAISS IVF k-means on all sampled frames to obtain K clusters (K≈100–200).  
+  - FAISS allows clustering and label assignment at scale with manageable memory and runtime.  
 - Label assignment:
   - For every frame in the training set, assign a discrete label 0..K‑1.
   - Store labels as compressed arrays with consistent alignment to frames.
@@ -106,7 +106,7 @@ For SSL sampling and clustering, I **cap per-language hours** to prevent English
 **Architecture (HuBERT-base-like):**
 
 - Conv feature encoder → downsampled sequence of latent frames.  
-- Transformer encoder with ~12 layers, hidden size ≈768, 8 attention heads, FFN size ≈3072.[web:233][web:382]
+- Transformer encoder with ~12 layers, hidden size ≈768, 8 attention heads, FFN size ≈3072.
 
 **Objective:**
 
@@ -115,12 +115,12 @@ For SSL sampling and clustering, I **cap per-language hours** to prevent English
   \[
   L = \psi L_m + (1 - \psi)L_u
   \]
-  where \(L_m\) and \(L_u\) are cross-entropy losses on masked and unmasked frames respectively.[web:382][web:270]
+  where \(L_m\) and \(L_u\) are cross-entropy losses on masked and unmasked frames respectively.
 
 **Training sketch:**
 
 - Optimizer: AdamW, linear warmup, cosine decay.  
-- Masking: ~75 ms spans, mask probability ~0.065 (following HuBERT).[web:289]  
+- Masking: ~75 ms spans, mask probability ~0.065 (HuBERT default range).  
 - Steps: target ~200–300k steps depending on total hours.
 
 ### 4.3 Iteration 1: clustering on hidden states
@@ -132,16 +132,16 @@ For SSL sampling and clustering, I **cap per-language hours** to prevent English
 
 **Clustering:**
 
-- Apply FAISS IVF k-means on these hidden vectors with a larger K (e.g., 500–1000) for richer discrete units.[web:270][web:295]  
+- Apply FAISS IVF k-means on these hidden vectors with a larger K (e.g., 500–1000) for richer discrete units.  
 - Re-assign labels for all time steps in the dataset.
 
 **Iteration‑1 HuBERT training:**
 
 - Initialize from Iteration‑0 encoder weights.  
 - Train with the new discrete units for another ~150–250k steps, same masking and loss.  
-- This is analogous to moving from early to later iterations in mHuBERT‑147, but tailored to 3 languages and smaller compute.[web:233][web:380]
+- This is analogous to moving from early to later iterations in mHuBERT‑147, but tailored to 3 languages and smaller compute.
 
-The **Iteration‑1 encoder** is the final **LeanHuBERT encoder** used for downstream tasks.
+The Iteration‑1 encoder is the final **LeanHuBERT encoder** used for downstream tasks.
 
 ---
 
@@ -159,14 +159,14 @@ I already have a working **Hinglish “charish” tokenizer + CTC wrapper** for 
   - Wrapped as `PreTrainedTokenizerFast` and saved to a local directory, e.g. `./hinglish_charish_tokenizer`.  
 - Processor:
   - `AutoFeatureExtractor.from_pretrained(MHUBERT_DIR)` + custom tokenizer →
-    `Wav2Vec2Processor(feature_extractor, tokenizer)` (no `AutoProcessor.from_pretrained` needed).  
+    `Wav2Vec2Processor(feature_extractor, tokenizer)`.  
 - Model wrapper:
   - A `MHuBERTForCTC` module that:
     - Instantiates the HuBERT encoder from config.  
     - Loads base HuBERT/mHuBERT encoder weights.  
     - Adds a linear CTC head and computes CTC loss with label masking.
 
-This path has already been validated with a **dummy forward pass** and a small subset of MuCS to ensure end-to-end shape correctness.
+This path has already been validated with a dummy forward pass and a small subset of MuCS to ensure end-to-end shape correctness.
 
 ### 5.2 MuCS evaluation setup (already working)
 
@@ -175,7 +175,7 @@ For benchmarking on **MuCS 2021 Hindi / Hinglish**:
 - MuCS TSV manifests live under:
 
   - `/home/om/asr-benchmarking/hindi/tsvs/mucs_train.tsv`  
-  - `/home/om/asr-benchmarking/hindi/tsvs/mucs_test.tsv`[cite:265][cite:266]
+  - `/home/om/asr-benchmarking/hindi/tsvs/mucs_test.tsv`
 
 - I load them via Hugging Face Datasets:
 
@@ -211,17 +211,17 @@ For benchmarking on **MuCS 2021 Hindi / Hinglish**:
 - Evaluation:
   - Model runs in eval mode on GPU or CPU.  
   - Hypotheses are obtained by simple greedy CTC decoding with `processor.batch_decode`.  
-  - WER is computed with `jiwer.wer(refs, hyps)` over the test split.[web:338][web:341][web:345]
+  - WER is computed with `jiwer.wer(refs, hyps)` over the test split.
 
-This gives a **baseline pipeline** to plug in any HuBERT-like encoder and see MuCS WER quickly, including the future LeanHuBERT model.
+This gives a baseline pipeline to plug in any HuBERT-like encoder and see MuCS WER quickly, including the future LeanHuBERT model.
 
 ### 5.3 Telephony CTC decoding (planned)
 
 After ASR fine-tuning:
 
-- Replace greedy decode with **CTC beam search**:
-  - `pyctcdecode` + **4-gram KenLM** trained on Hindi/Hinglish/English transcripts.  
-- Use **adaptive beams** depending on speech rate / confidence, to balance accuracy vs latency on CPU.
+- Replace greedy decode with CTC beam search:
+  - `pyctcdecode` + 4-gram KenLM trained on Hindi/Hinglish/English transcripts.  
+- Use adaptive beams depending on speech rate / confidence, to balance accuracy vs latency on CPU.
 
 ---
 
@@ -229,13 +229,13 @@ After ASR fine-tuning:
 
 I am designing this to be trainable with **modest GPU resources**, guided by:
 
-- HuBERT pre-training recipes that show how to cut compute by careful batching.[web:289][web:385]  
-- mHuBERT‑147’s FAISS-based clustering tricks, which avoid massive RAM requirements when labeling tens of thousands of hours.[web:233][web:270][web:380]
+- HuBERT pre-training recipes that show how to cut compute by careful batching and feature handling.  
+- mHuBERT‑147’s FAISS-based clustering tricks, which avoid massive RAM requirements when labeling large amounts of data.
 
 Planned practices:
 
 - Use FAISS to keep clustering scalable without storing all features in RAM.  
-- Start with a reasonable total hours budget (hundreds to a low thousands) focused on telephony and Indian accents instead of chasing “90k hours”.  
+- Start with a reasonable total hours budget (hundreds to a low thousands) focused on telephony and Indian accents instead of chasing 90k hours.  
 - Incrementally scale up data and iterations as compute permits.
 
 ---
@@ -244,22 +244,21 @@ Planned practices:
 
 **Already implemented / validated:**
 
-- [x] Local mHuBERT encoder directory (`/home/om/models/mhubert147`) and HF-based loading.  
-- [x] Custom **Hinglish tokenizer** and CTC wrapper (`MHuBERTForCTC`) with a working dummy forward pass.  
-- [x] MuCS TSV manifests and dataset loader using Hugging Face Datasets.[cite:265][cite:266]  
-- [x] End-to-end MuCS evaluation script with:
+- Local mHuBERT encoder directory (`/home/om/models/mhubert147`) and HF-based loading.  
+- Custom Hinglish tokenizer and CTC wrapper (`MHuBERTForCTC`) with a working dummy forward pass.  
+- MuCS TSV manifests and dataset loader using Hugging Face Datasets.  
+- End-to-end MuCS evaluation script with:
   - Debug mode (5 samples vs full set).  
-  - Audio → features → CTC logits → greedy decode.  
-  - WER computation with `jiwer`.
+  - Audio → features → CTC logits → greedy decode → WER with `jiwer`.
 
 **Planned / in-progress:**
 
-- [ ] Implement Iteration‑0 clustering with MFCC/log-Mel + FAISS IVF k-means.  
-- [ ] Train Iteration‑0 HuBERT on Hindi/Hinglish/English pooled data.  
-- [ ] Implement Iteration‑1 clustering over encoder hidden states and retrain.  
-- [ ] Fine-tune LeanHuBERT + CTC on MuCS + proprietary call center datasets.  
-- [ ] Integrate pyctcdecode + KenLM for robust telephony decoding on CPU.  
-- [ ] Benchmark against `facebook/wav2vec2-xls-r-300m` and other SSL baselines on MuCS and internal test sets.[web:365][web:377]
+- Implement Iteration‑0 clustering with MFCC/log-Mel + FAISS IVF k-means.  
+- Train Iteration‑0 HuBERT on Hindi/Hinglish/English pooled data.  
+- Implement Iteration‑1 clustering over encoder hidden states and retrain.  
+- Fine-tune LeanHuBERT + CTC on MuCS + proprietary call center datasets.  
+- Integrate pyctcdecode + KenLM for robust telephony decoding on CPU.  
+- Benchmark against `facebook/wav2vec2-xls-r-300m` and other SSL baselines on MuCS and internal test sets.
 
 ---
 
@@ -267,8 +266,8 @@ Planned practices:
 
 To keep this project **commercially usable**:
 
-- I do **not** use mHuBERT‑147 weights or any non-commercial models as initialization.  
-- I treat models like mHuBERT‑147, XLS‑R, MMS, etc. solely as **research references** (architecture and training ideas).[web:233][web:270][web:380]  
+- I do not use mHuBERT‑147 weights or any non-commercial models as initialization.  
+- I treat models like mHuBERT‑147, XLS‑R, MMS, etc. solely as **conceptual references** (architecture and training ideas).  
 - All training data are either:
   - Proprietary audio I own or have explicit rights to, or  
   - Datasets whose licenses allow commercial usage.
@@ -277,9 +276,9 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
 
 ---
 
-## 9. Key Takeaway
+## 9. This project highlights:
 
-This project highlights:
+
 
 - **Representation learning**:
   - Why HuBERT-style SSL is a good fit for multilingual telephony.  
