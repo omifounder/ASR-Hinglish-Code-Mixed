@@ -292,15 +292,16 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
   - Designing from day one for commercial safety (no research-only weights).  
   - Adapting a large academic model (mHuBERT‑147) into a **domain-specific, deployable** variant for Hindi/Hinglish/English contact centers.
 
-## REFERECNE - mHuBERT-17
-Marcely Zanon Boito1, Vivek Iyer2, Nikolaos Lagos1, Laurent Besacier1, Ioan Calapodescu1 <br>
-1NAVER LABS Europe - France <br>
-2University of Edinburgh - UK <br>
-Training code: https://github.com/utter-project/fairseq <br>
-Pre-processing code: https://github.com/utter-project/mHuBERT-147-scripts <br>
-Model Weights: https://huggingface.co/utter-project/mHuBERT-147 <br>
+## REFERECNE - 
+### HuBERT-147: A Compact Multilingual HuBERT Model
+- Marcely Zanon Boito1, Vivek Iyer2, Nikolaos Lagos1, Laurent Besacier1, Ioan Calapodescu1 <br>
+- 1NAVER LABS Europe - France, 2University of Edinburgh - UK <br>
+- **Training code:**  https://github.com/utter-project/fairseq <br>
+- **Pre-processing code:** https://github.com/utter-project/mHuBERT-147-scripts <br>
+- **Model Weights:** https://huggingface.co/utter-project/mHuBERT-147 <br>
+- **Paper**: 
 <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-        <li>mHuBERT-147: A Compact Multilingual HuBERT Model <a href="https://arxiv.org/pdf/2406.06371">↗</a></li> 
+        <li>Paper <a href="https://arxiv.org/pdf/2406.06371">↗</a></li> 
 
 ---
 
