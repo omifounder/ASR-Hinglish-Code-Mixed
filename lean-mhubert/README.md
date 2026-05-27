@@ -294,6 +294,9 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
 
 ## REFERECNE
 <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-        <li>RL Top-k Off Policy based Recommendation <a href="https://arxiv.org/pdf/1812.02353">↗</a></li> 
-  
+        <li>mHuBERT-147: A Compact Multilingual HuBERT Model <a href="https://arxiv.org/pdf/2406.06371">↗</a></li> 
+
+- mHuBERT-147: A Compact Multilingual HuBERT Model <a href="https://arxiv.org/pdf/2406.06371">↗</a>
+---
+
 If you’re reading this on GitHub and want to discuss the design or collaborate on LeanHuBERT-style models, feel free to open an issue or reach out.
