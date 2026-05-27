@@ -145,7 +145,7 @@ Dates are deliberately varied between English numerals (*15 January*), Hindi num
 | Model | Qwen3-32B (q8_0 quantisation) |
 | Inference | Ollama, local GPU |
 | Thinking mode | Enabled (higher naturalness, better JSON structure) |
-| Hardware | 1× NVIDIA A40 48GB per pass |
+| Hardware | NVIDIA GPU |
 | Estimated time | ~3.5 hours for full 320 conversations (both passes) |
 | License | Apache 2.0 — commercial use permitted |
 
