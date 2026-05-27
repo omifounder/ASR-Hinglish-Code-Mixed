@@ -277,7 +277,7 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
 
 ---
 
-## 9. Interview Talking Points
+## 9. Key Takeaway
 
 This project highlights:
 
