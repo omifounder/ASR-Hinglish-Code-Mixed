@@ -292,4 +292,8 @@ The repo itself focuses on **code, configuration, and design**, not on distribut
   - Designing from day one for commercial safety (no research-only weights).  
   - Adapting a large academic model (mHuBERT‑147) into a **domain-specific, deployable** variant for Hindi/Hinglish/English contact centers.
 
+## REFERECNE
+<ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+        <li>RL Top-k Off Policy based Recommendation <a href="https://arxiv.org/pdf/1812.02353">↗</a></li> 
+  
 If you’re reading this on GitHub and want to discuss the design or collaborate on LeanHuBERT-style models, feel free to open an issue or reach out.
